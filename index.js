@@ -1,24 +1,27 @@
 import papa from 'papaparse';
 
-const secondsToWait = 4;
-const id = window.location.search?.split('=')[1];
+const redirectId = window.location.search?.split('=')[1];
+
+function notFound() {
+  document.getElementById('not-found').style.display = 'block';
+}
 
 function error(err, file, inputElem, reason) {
   console.error({err, file, inputElem, reason});
-  document.getElementById('not-found').style.display = 'block';
+  notFound();
 }
 
 function complete(response) {
   let found = false;
-  response.data.forEach(memorial => {
-    if (memorial.id == id) {
+  response.data.forEach(redirect => {
+    if (redirect.id == redirectId) {
       found = true;
-      document.getElementById('link').href = memorial.url;
-      document.getElementById('name').innerHTML = memorial.name;
-      document.getElementById('memorial').style.display = 'block';
+      document.getElementById('link').href = redirect.url;
+      document.getElementById('name').innerHTML = redirect.name;
+      document.getElementById('jump').style.display = 'block';
     }
   });
-  if (!found) document.getElementById('not-found').style.display = 'block';
+  if (!found) notFound();
 }
 
 const config = {
@@ -33,4 +36,4 @@ const config = {
   error
 };
 
-papa.parse('./memorial.csv', config);
+papa.parse('./redirect.csv', config);
